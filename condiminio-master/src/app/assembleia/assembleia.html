@@ -1,0 +1,144 @@
+<main class="pagina-assembleia">
+  @if (secao === 'votacoes') {
+    @if (perfil === 'sindico') {
+      <section class="formulario-assembleia">
+        <div class="titulo-secao">
+          <p class="etiqueta-assembleia">RESIDENCIAL JARDIM DAS ACÁCIAS</p>
+          <h2>Agendar assembleia</h2>
+          <p>Organize a reunião e compartilhe a pauta com os moradores.</p>
+        </div>
+        <div class="grade-campos">
+          <label class="campo campo-largo" for="titulo-assembleia">Nome da assembleia<input id="titulo-assembleia" #titulo maxlength="80" placeholder="Ex.: Assembleia ordinária" /></label>
+          <label class="campo" for="data-assembleia">Data<input id="data-assembleia" #data type="date" /></label>
+          <label class="campo" for="hora-assembleia">Horário<input id="hora-assembleia" #horario type="time" /></label>
+          <label class="campo campo-largo" for="local-assembleia">Local ou link<input id="local-assembleia" #local maxlength="120" placeholder="Ex.: Salão de festas ou link da chamada" /></label>
+          <label class="campo campo-largo" for="pauta-assembleia">Pauta<textarea id="pauta-assembleia" #pauta rows="4" placeholder="Liste os assuntos que serão discutidos"></textarea></label>
+        </div>
+        @if (mensagemErro) { <p class="aviso erro" role="alert">{{ mensagemErro }}</p> }
+        @if (mensagemSucesso) { <p class="aviso sucesso" role="status">{{ mensagemSucesso }}</p> }
+        <button class="botao-agendar" type="button" (click)="criar(titulo.value, data.value, horario.value, local.value, pauta.value)">Agendar assembleia</button>
+      </section>
+    }
+
+    <section class="lista-assembleias">
+      <header class="cabecalho-lista"><div><h2>Assembleias</h2><p>Consulte as próximas reuniões e suas pautas.</p></div><span class="contador">{{ assembleias().length }}</span></header>
+      @if (assembleias().length === 0) {
+        <div class="estado-vazio"><strong>Nenhuma assembleia cadastrada</strong><p>Quando uma assembleia for agendada, ela aparecerá aqui.</p></div>
+      } @else {
+        <div class="lista-cartoes">
+          @for (assembleia of assembleias(); track assembleia.id) {
+            <article class="cartao-assembleia">
+              <header class="linha-cartao"><h3>{{ assembleia.titulo }}</h3><span class="estado" [class.realizada]="assembleia.status === 'realizada'">{{ assembleia.status === 'realizada' ? 'Realizada' : 'Agendada' }}</span></header>
+              <div class="detalhes-reuniao"><span>{{ formatarData(assembleia.data) }} · {{ assembleia.horario }}</span><span>{{ assembleia.local }}</span></div>
+              <div class="pauta-reuniao"><strong>Pauta</strong><p>{{ assembleia.pauta }}</p></div>
+              @if (perfil === 'sindico' && assembleia.status === 'agendada') { <button class="botao-realizada" type="button" (click)="marcarRealizada(assembleia)">Marcar como realizada</button> }
+            </article>
+          }
+        </div>
+      }
+    </section>
+
+    @if (perfil === 'morador') {
+      <section class="formulario-assembleia">
+        <div class="titulo-secao"><p class="etiqueta-assembleia">NOVA VOTAÇÃO</p><h2>Adicionar projeto</h2><p>Apresente sua proposta para os moradores avaliarem.</p></div>
+        <div class="grade-campos">
+          <label class="campo campo-largo" for="titulo-projeto">Título do projeto<input id="titulo-projeto" #tituloProjeto maxlength="80" placeholder="Ex.: Revitalização do jardim" /></label>
+          <label class="campo campo-largo" for="descricao-projeto">Descrição<textarea id="descricao-projeto" #descricaoProjeto rows="4" placeholder="Explique os detalhes da proposta"></textarea></label>
+          <label class="campo campo-largo" for="preco-projeto">Média de preço estimada (R$)<input id="preco-projeto" #precoProjeto type="number" min="0.01" step="0.01" placeholder="Ex.: 18450,00" /></label>
+        </div>
+        @if (mensagemErro) { <p class="aviso erro" role="alert">{{ mensagemErro }}</p> }
+        @if (mensagemSucesso) { <p class="aviso sucesso" role="status">{{ mensagemSucesso }}</p> }
+        <button class="botao-agendar" type="button" (click)="enviarProjeto(tituloProjeto, descricaoProjeto, precoProjeto)">Adicionar projeto</button>
+      </section>
+    }
+
+    <section class="lista-assembleias">
+      <header class="cabecalho-lista"><div><h2>Votações em aberto</h2><p>Vote a favor ou contra as propostas dos moradores.</p></div><span class="contador">{{ projetosEmAnalise().length }}</span></header>
+      @if (projetosEmAnalise().length === 0) {
+        <div class="estado-vazio"><strong>Nenhuma votação adicionada</strong><p>As novas propostas aparecerão aqui.</p></div>
+      } @else {
+        <div class="lista-cartoes">
+          @for (projeto of projetos(); track projeto.id) {
+            @if (projeto.status === 'em_analise') {
+              <article class="cartao-assembleia projeto-card">
+                <header class="linha-cartao"><h3>{{ projeto.titulo }}</h3><span class="estado">Em votação</span></header>
+                <p class="descricao-projeto">{{ projeto.descricao }}</p>
+                <div class="preco-projeto"><span>Média de preço</span><strong>{{ formatarMoeda(projeto.mediaPreco) }}</strong></div>
+                <div class="detalhes-reuniao"><span>Proposto por {{ projeto.enviadoPor }}</span><span>{{ votosFavor(projeto) }} a favor · {{ votosContra(projeto) }} contra</span></div>
+                @if (perfil === 'morador' && projeto.enviadoPor !== usuarioLogado && !jaVotou(projeto)) {
+                  <div class="acoes-projeto"><button class="botao-voto voto-favor" type="button" (click)="votar(projeto, 'favor')">Votar a favor</button><button class="botao-voto voto-contra" type="button" (click)="votar(projeto, 'contra')">Votar contra</button></div>
+                } @else if (perfil === 'morador' && projeto.enviadoPor === usuarioLogado) {
+                  <p class="nota-projeto">Você enviou esta proposta e não pode votar nela.</p>
+                } @else if (perfil === 'morador' && jaVotou(projeto)) {
+                  <p class="nota-projeto">Seu voto foi registrado.</p>
+                }
+                @if (perfil === 'morador' && projeto.enviadoPor !== usuarioLogado && !jaDenunciou(projeto)) {
+                  <button class="botao-denunciar" type="button" (click)="abrirDenuncia(projeto)">Denunciar</button>
+                  @if (denunciaAbertaId === projeto.id) {
+                    <label class="campo campo-denuncia" for="motivo-denuncia-{{ projeto.id }}">Motivo da denúncia<textarea id="motivo-denuncia-{{ projeto.id }}" #motivoDenuncia rows="3" placeholder="Explique o motivo"></textarea></label>
+                    <button class="botao-voto" type="button" (click)="denunciar(projeto, motivoDenuncia)">Enviar denúncia</button>
+                  }
+                } @else if (perfil === 'morador' && jaDenunciou(projeto)) {
+                  <p class="nota-projeto">Você já denunciou este projeto.</p>
+                }
+              </article>
+            }
+          }
+        </div>
+      }
+    </section>
+  }
+
+  @if (secao === 'analise') {
+    <header class="cabecalho-analise">
+      <p class="etiqueta-assembleia">RESIDENCIAL JARDIM DAS ACÁCIAS</p>
+      <h2>{{ perfil === 'sindico' ? 'Análise de projetos' : 'Projetos aprovados' }}</h2>
+      <p>{{ perfil === 'sindico' ? 'Revise as votações, avalie as denúncias e acompanhe os projetos em execução.' : 'Acompanhe os projetos aprovados pelo síndico e seu andamento.' }}</p>
+    </header>
+
+    @if (perfil === 'sindico') {
+      <section class="lista-assembleias">
+        <header class="cabecalho-lista"><div><h2>Denúncias recebidas</h2><p>Somente os moradores podem enviar denúncias.</p></div><span class="contador">{{ denunciasPendentes().length }}</span></header>
+        @if (denunciasPendentes().length === 0) {
+          <div class="estado-vazio"><strong>Nenhuma denúncia pendente</strong><p>As denúncias dos moradores aparecerão aqui.</p></div>
+        } @else {
+          <div class="lista-cartoes">
+            @for (denuncia of denunciasPendentes(); track denuncia.id) {
+              <article class="cartao-assembleia"><header class="linha-cartao"><h3>{{ denuncia.projetoTitulo }}</h3><span class="estado">Recebida</span></header><div class="detalhes-reuniao"><span>Denunciado por {{ denuncia.morador }}</span></div><p class="descricao-projeto">{{ denuncia.motivo }}</p><button class="botao-realizada" type="button" (click)="marcarDenunciaAnalisada(denuncia.id)">Marcar como analisada</button></article>
+            }
+          </div>
+        }
+      </section>
+
+      <section class="lista-assembleias">
+        <header class="cabecalho-lista"><div><h2>Projetos aguardando análise</h2><p>Considere a votação dos moradores antes de decidir.</p></div><span class="contador">{{ projetosEmAnalise().length }}</span></header>
+        @if (projetosEmAnalise().length === 0) {
+          <div class="estado-vazio"><strong>Nenhum projeto aguardando análise</strong><p>As novas propostas dos moradores aparecerão aqui.</p></div>
+        } @else {
+          <div class="lista-cartoes">
+            @for (projeto of projetos(); track projeto.id) {
+              @if (projeto.status === 'em_analise') {
+                <article class="cartao-assembleia projeto-card"><header class="linha-cartao"><h3>{{ projeto.titulo }}</h3><span class="estado">Em análise</span></header><p class="descricao-projeto">{{ projeto.descricao }}</p><div class="preco-projeto"><span>Média de preço</span><strong>{{ formatarMoeda(projeto.mediaPreco) }}</strong></div><div class="detalhes-reuniao"><span>Enviado por {{ projeto.enviadoPor }}</span><span>{{ votosFavor(projeto) }} a favor · {{ votosContra(projeto) }} contra</span></div><div class="acoes-projeto"><button class="botao-voto voto-favor" type="button" (click)="decidir(projeto, true)">Aprovar projeto</button><button class="botao-voto voto-contra" type="button" (click)="decidir(projeto, false)">Recusar projeto</button></div></article>
+              }
+            }
+          </div>
+        }
+      </section>
+    }
+
+    <section class="lista-assembleias painel-aprovados">
+      <header class="cabecalho-lista"><div><h2>Projetos em execução</h2><p>Projetos aprovados pelo síndico, visíveis para moradores e síndico.</p></div><span class="contador">{{ projetosAprovados().length }}</span></header>
+      @if (projetosAprovados().length === 0) {
+        <div class="estado-vazio"><strong>Nenhum projeto aprovado ainda</strong><p>Os projetos aprovados aparecerão aqui.</p></div>
+      } @else {
+        <div class="lista-cartoes">
+          @for (projeto of projetosAprovados(); track projeto.id) {
+            <article class="cartao-assembleia projeto-card"><header class="linha-cartao"><h3>{{ projeto.titulo }}</h3><span class="estado realizada">{{ projeto.progresso === 100 ? 'Concluído' : 'Aprovado' }}</span></header><p class="descricao-projeto">{{ projeto.descricao }}</p><div class="preco-projeto"><span>Média de preço</span><strong>{{ formatarMoeda(projeto.mediaPreco) }}</strong></div><div class="progresso-cabecalho"><span>Progresso do projeto</span><strong>{{ projeto.progresso }}%</strong></div><progress class="barra-progresso" [value]="projeto.progresso" max="100">{{ projeto.progresso }}%</progress><p class="etapa-projeto">{{ projeto.progresso === 100 ? 'Projeto concluído' : projeto.progresso === 0 ? 'Aguardando início' : 'Projeto em execução' }}</p>
+              @if (perfil === 'sindico') { <label class="campo campo-progresso" for="progresso-{{ projeto.id }}">Atualizar andamento<input id="progresso-{{ projeto.id }}" #progressoInput type="range" min="0" max="100" step="5" [value]="projeto.progresso" (input)="atualizarProgresso(projeto, progressoInput.value)" /></label> }
+            </article>
+          }
+        </div>
+      }
+    </section>
+  }
+</main>

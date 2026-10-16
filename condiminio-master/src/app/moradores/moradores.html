@@ -1,0 +1,127 @@
+<section class="cartao-moradores">
+  <header class="cabecalho-convite">
+    <span class="icone-convite"><mat-icon>key</mat-icon></span>
+    <div>
+      <h2>Gerar código de convite</h2>
+      <p>Libere o cadastro de uma unidade.</p>
+    </div>
+  </header>
+
+  <div class="acoes-convite">
+    <button class="botao-voltar-painel" type="button" (click)="voltarParaPainel()">
+      <mat-icon>arrow_back</mat-icon>
+      Voltar ao painel do síndico
+    </button>
+  </div>
+
+  <section class="formulario-convite">
+    <p class="texto-orientacao">Informe bloco e apartamento. O morador usará o código gerado para criar a própria conta.</p>
+
+    <div class="campos-unidade">
+      <div class="campo-morador">
+        <label for="bloco">Bloco</label>
+        <input
+          id="bloco"
+          #blocoInput
+          type="text"
+          placeholder="Ex.: A">
+      </div>
+
+      <div class="campo-morador">
+        <label for="apartamento">Apartamento</label>
+        <input
+          id="apartamento"
+          #apartamentoInput
+          type="text"
+          placeholder="Ex.: 101">
+      </div>
+    </div>
+
+    <button class="botao-gerar-convite" type="button" (click)="confirmarCadastro(blocoInput.value, apartamentoInput.value)">
+      <mat-icon>key</mat-icon>
+      Gerar código de convite
+    </button>
+
+    @if (erroCadastro !== '') {
+      <p class="mensagem-erro">{{ erroCadastro }}</p>
+    }
+
+    @if (codigoGerado !== '') {
+      <section class="codigo-gerado">
+        <mat-icon>check_circle</mat-icon>
+        <div>
+          <strong>Código de convite gerado!</strong>
+          <p>Código de acesso: <b>{{ codigoGerado }}</b></p>
+        </div>
+      </section>
+    }
+  </section>
+
+@if (mensagemSucesso !== '') {
+  <p class="mensagem-sucesso" role="status">{{ mensagemSucesso }}</p>
+}
+<section class="lista-convites">
+<h3>Convites gerados</h3>
+
+@if (moradores.length === 0) {
+  <p>Nenhum convite gerado ainda.</p>
+} @else {
+  @for (morador of moradores; track morador.codigo) {
+    <article class="cartao-morador">
+      <p><strong>Bloco:</strong> {{ morador.bloco }}</p>
+      <p><strong>Apartamento:</strong> {{ morador.apartamento }}</p>
+      <p><strong>Código:</strong> {{ morador.codigo }}</p>
+      <button class="botao-excluir" type="button" (click)="pedirExclusao(morador)">
+        Excluir morador
+      </button>
+    </article>
+  }
+}
+</section>
+
+@if (mostrarModalExclusao && moradorParaExcluir !== null) {
+  <div class="fundo-modal" role="presentation">
+    <section class="modal-confirmacao" role="dialog" aria-modal="true" aria-labelledby="titulo-exclusao">
+      <h3 id="titulo-exclusao">Excluir morador?</h3>
+      <p>
+        Deseja excluir o convite do {{ moradorParaExcluir.bloco }}, apartamento {{ moradorParaExcluir.apartamento }}? Esta ação não poderá ser desfeita.
+      </p>
+
+      <div class="botoes-modal">
+        <button class="botao-cancelar" type="button" (click)="cancelarExclusao()">
+          Cancelar
+        </button>
+        <button class="botao-confirmar" type="button" (click)="confirmarExclusao()">
+          Confirmar exclusão
+        </button>
+      </div>
+    </section>
+  </div>
+}
+</section>
+@if (mostrarModalConfirmacao) {
+  <div class="fundo-modal">
+    <section class="modal-confirmacao">
+      <h3>Gerar código de convite?</h3>
+
+      <p>
+        Deseja gerar um convite para {{ blocoPendente }}, apartamento {{ apartamentoPendente }}?
+      </p>
+
+      <div class="botoes-modal">
+        <button class="botao-cancelar" (click)="cancelarConfirmacao()">
+          Cancelar
+        </button>
+
+        <button
+          class="botao-confirmar"
+          (click)="confirmarCadastroFinal(
+            blocoInput,
+            apartamentoInput
+          )">
+          Gerar código
+        </button>
+      </div>
+    </section>
+  </div>
+}

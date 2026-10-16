@@ -1,0 +1,113 @@
+
+<section class="cartao-cadastro-morador">
+  <div class="campo-cadastro">
+    <label    for="codigo">Código de convite</label>
+    <input class="campo-dourado"   id="codigo" #codigoInput type="text" placeholder="Ex.: B302-K7F1" />
+  </div>
+  <div class="campo-cadastro">
+    <label for="nome">Nome</label>
+    <input
+      id="nome"
+      #nomeInput
+      type="text"
+      autocomplete="given-name"
+      placeholder="Maria"
+    />
+  </div>
+
+  <div class="campo-cadastro">
+    <label for="sobrenome">Sobrenome</label>
+    <input
+      id="sobrenome"
+      #sobrenomeInput
+      type="text"
+      autocomplete="family-name"
+      placeholder="Silva"
+    />
+  </div>
+
+  <div class="campo-cadastro">
+    <label for="cpf">CPF</label>
+    <input
+      id="cpf"
+      #cpfInput
+      type="text"
+      inputmode="numeric"
+      maxlength="14"
+      autocomplete="off"
+      placeholder="000.000.000-00"
+      (input)="formatarCpf($event)"
+    />
+  </div>
+  <div class="campo-cadastro">
+    <label for="telefone">Telefone</label>
+    <input
+      id="telefone"
+      #telefoneInput
+      type="tel"
+      inputmode="numeric"
+      maxlength="15"
+      autocomplete="tel"
+      placeholder="Ex.: (00) 00000-0000"
+      (input)="formatarTelefone($event)"
+    />
+  </div>
+
+
+
+  <div class="campo-cadastro">
+    <label for="senha">Senha</label>
+    <input
+      id="senha"
+      #senhaInput
+      type="password"
+      maxlength="6"
+      autocomplete="new-password"
+      placeholder="******"
+    />
+  </div>
+
+  <div class="campo-cadastro">
+    <label for="confirmar-senha">Confirmar senha</label>
+    <input
+      id="confirmar-senha"
+      #confirmarSenhaInput
+      type="password"
+      maxlength="6"
+      autocomplete="new-password"
+      placeholder="******"
+    />
+  </div>
+
+  <button
+    (click)="
+      finalizarCadastro(
+        nomeInput.value,
+        sobrenomeInput.value,
+        telefoneInput.value,
+        cpfInput.value,
+        codigoInput.value,
+        senhaInput.value,
+        confirmarSenhaInput.value
+      )
+    "
+  >
+    Finalizar cadastro
+  </button>
+
+  @if (erroCadastro !== '') {
+    <p class="mensagem-erro">{{ erroCadastro }}</p>
+  }
+
+  @if (cadastroConcluido !== '') {
+    <p class="mensagem-sucesso">{{ cadastroConcluido }}</p>
+  }
+
+  <div>
+    <span
+    class="dourado"
+    (click)="voltarParaLogin()">
+    Já tem conta? Entrar
+    </span>
+  </div>
+</section>

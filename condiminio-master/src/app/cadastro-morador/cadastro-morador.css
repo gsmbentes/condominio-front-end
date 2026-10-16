@@ -1,0 +1,127 @@
+.cartao-cadastro-morador {
+  max-width: 520px;
+  margin: 32px auto;
+  padding: 32px;
+  border: 1px solid #e4e0d8;
+  border-radius: 14px;
+  background-color: white;
+  box-shadow: 0 10px 28px rgba(46, 42, 35, 0.07);
+  padding-bottom: 60px;
+}
+
+.campo-cadastro:has(#nome),
+.campo-cadastro:has(#sobrenome) {
+  display: inline-flex;
+  flex-direction: column;
+  width: calc(50% - 10px);
+  vertical-align: top;
+}
+
+.campo-cadastro:has(#nome) {
+  margin-right: 16px;
+}
+.campo-cadastro label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.campo-cadastro input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.campo-cadastro input:focus {
+  outline: none;
+  border-color: #292929;
+  box-shadow: 0 0 0 3px #e6e2da;
+}
+
+.cartao-cadastro-morador button {
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background-color: #292929;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cartao-cadastro-morador button:hover {
+  background-color: #4a4741;
+}
+
+.mensagem-erro {
+  margin: 16px 0 0;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #fef2f2;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.mensagem-sucesso {
+  margin: 16px 0 0;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #f0fdf4;
+  color: #15803d;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .cartao-cadastro-morador {
+    margin: 16px auto;
+    padding: 20px;
+  }
+}
+
+/* Paleta global: somente cores, sem alterar medidas ou posicionamento. */
+:host { color: var(--cor-card-escuro); }
+.cartao-cadastro { background: var(--cor-card); border-color: var(--cor-input); }
+input { background: var(--cor-input); border-color: var(--cor-primaria); color: var(--cor-card-escuro); }
+input:focus { border-color: var(--cor-primaria); box-shadow: 0 0 0 3px var(--cor-input); }
+button { background: var(--cor-fundo); color: var(--cor-texto); }
+button:hover { background: var(--cor-card-escuro); }
+
+.campo-dourado {
+  background-color: white;
+  color: black;
+  border: 1px  ;
+  border-color: #D4AF37;
+}
+
+.campo-dourado::placeholder {
+  color: #D4AF37;
+  opacity: 1;
+}
+
+
+
+.campo-cadastro input.campo-dourado {
+  background-color: white;
+  color: black;
+  border: 2px solid #D4AF37;
+}
+
+.campo-cadastro input.campo-dourado::placeholder {
+  color: #D4AF37;
+  opacity: 1;
+}
+
+.campo-cadastro input.campo-dourado:focus {
+  outline: none;
+  border: 2px solid #D4AF37;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+}
+.dourado {
+  color: #D4AF37;
+  cursor: pointer;
+}

@@ -1,0 +1,289 @@
+@if (telaAtual === 'login' && perfil_selecionado === 'morador') {
+
+  <h1 class="font" style="text-align: left;">Veritas</h1>
+  <p class="font" style="text-align: left;">Gestão do seu condomínio, num só lugar.</p>
+
+} @else if (telaAtual === 'cadastroMorador') {
+
+  <h1 class="font"  style="text-align: left;">Criar conta</h1>
+  <p class="font" style="text-align: left;">
+    Utilize o código de convite enviado pelo síndico
+    <br>
+    de seu condomínio
+  </p>
+
+} @else if (telaAtual === 'sistema' && perfil_selecionado === 'morador' && telaChamadosAtual !== 'detalheMorador') {
+
+  <h1 class="font">{{ telaChamadosAtual === 'novo' ? 'Novo chamado' : 'Meus chamados' }}</h1>
+  <p class="font">{{ telaChamadosAtual === 'novo' ? 'Residencial Jardim das Acácias' : 'Gestão dos seus chamados.' }}</p>
+
+} @else if (telaAtual === 'sistema' && perfil_selecionado === 'morador' && telaChamadosAtual === 'detalheMorador') {
+
+  <span class="cabecalho-oculto" aria-hidden="true"></span>
+
+} @else if (telaAtual === 'inicio') {
+
+  <h1 class="font">Veritas</h1>
+  <p class="font">Gestão do seu condomínio, num só lugar.</p>
+
+} @else if (telaAtual === 'perfilUsuario') {
+
+  <h1 class="font">Perfil</h1>
+  <p class="font">Sua área no Veritas.</p>
+
+} @else if (telaAtual === 'chamadosSindico' && telaChamadosAtual !== 'detalheSindico') {
+
+  <h1 class="font">Todos os chamados</h1>
+  <p class="font">Residencial Jardim das Acácias</p>
+
+} @else if (telaAtual === 'chamadosSindico' && telaChamadosAtual === 'detalheSindico') {
+
+  <span class="cabecalho-oculto" aria-hidden="true"></span>
+
+} @else if (telaAtual === 'moradores') {
+
+  <span class="cabecalho-oculto" aria-hidden="true"></span>
+
+} @else if (telaAtual === 'assembleia') {
+
+  <h1 class="font">Assembleias</h1>
+  <p class="font">Votações e reuniões do condomínio.</p>
+
+} @else if (telaAtual === 'analiseProjetos') {
+
+  <h1 class="font">Análise de projetos</h1>
+  <p class="font">Projetos aprovados e acompanhamento da execução.</p>
+
+} @else if (telaAtual === 'painelSindico') {
+
+  <span class="cabecalho-oculto" aria-hidden="true"></span>
+
+} @else {
+
+  <h1 class="font">{{ title() }}</h1>
+  <p class="font">Sistema de gerenciamento de Condomínio</p>
+
+}
+
+@if (telaAtual === 'perfil') {
+  <section class="cartao-acesso">
+    <h2>Escolha seu perfil</h2>
+
+    <div class="opcoes-perfil">
+      <button class="card-perfil" type="button" (click)="escolherPerfil('morador')" [attr.aria-pressed]="perfil_selecionado === 'morador'">
+        <img class="icone-perfil" src="/icones/morador.webp" alt="Ícone de morador">
+        <strong>Morador</strong>
+        <span>Abra e acompanhe os seus chamados.</span>
+      </button>
+
+      <button class="card-perfil" type="button" (click)="escolherPerfil('sindico')" [attr.aria-pressed]="perfil_selecionado === 'sindico'">
+        <img class="icone-perfil" src="/icones/sindico.webp" alt="Ícone de síndico">
+        <strong>Síndico</strong>
+        <span>Gerencie, resolva e acompanhe os chamados.</span>
+      </button>
+    </div>
+
+    @if (perfil_selecionado !== '') {
+      <p class="font2">Perfil escolhido: {{ perfil_selecionado }}</p>
+
+      <button class="botao-continuar" type="button" (click)="ir_paralogin()">
+        Continuar para login
+      </button>
+    } @else {
+      <p>Escolha como deseja entrar no sistema.</p>
+    }
+  </section>
+}
+
+@if (telaAtual === 'login'){
+  <section class="login-container">
+<button class="botao-voltar"  type="button" (click)="voltarParaPerfil() ">voltar para perfil</button>
+
+<h4>Entrar</h4>
+<div class="campo-login">
+  <label for="identificador">CPF</label>
+
+  <input
+    id="identificador"
+    #identificadorInput
+    type="text"
+    inputmode="numeric"
+    maxlength="14"
+    autocomplete="username"
+    placeholder="000.000.000-00"
+    (input)="formatarCpf($event)"
+    required>
+</div>
+
+<div class="campo-login">
+  <label for="senha">Senha</label>
+
+  <input
+    id="senha"
+    #senhaInput
+    maxlength="8"
+    type="password"
+    autocomplete="current-password"
+    placeholder="******"
+    required>
+</div>
+
+<button
+class="botao-entrar"
+(click)="fazerLogin(identificadorInput.value, senhaInput.value)">
+Entrar
+</button>
+@if (perfil_selecionado === 'morador') {
+  <span
+    class="dourado"
+    (click)="abrirCadastroMorador()">
+    Ainda não tem conta? Cadastrar-se
+</span>
+}
+
+@if (erroLogin !== '') {
+  <p class="mensagem-erro">{{ erroLogin }}</p>
+}
+</section>
+}
+@if (telaAtual === 'sistema') {
+  @if (perfil_selecionado === 'sindico') {
+    <button class="botao-voltar" (click)="voltarParaPainelSindico()">
+      Voltar ao painel do síndico
+    </button>
+  }
+  @if (perfil_selecionado === 'morador' && telaChamadosAtual !== 'novo' && telaChamadosAtual !== 'detalheMorador') {
+    <button class="botao-voltar" (click)="sair()">
+    Sair do app
+  </button>
+  }
+
+  <app-chamados
+    [perfil]="perfil_selecionado"
+    [usuarioLogado]="usuarioLogado"
+    (telaMudou)="atualizarTelaChamados($event)">
+  </app-chamados>
+}
+@if (telaAtual === 'chamadosSindico') {
+  @if (telaChamadosAtual !== 'detalheSindico') {
+    <button class="botao-voltar voltar-painel-sindico" type="button" (click)="voltarParaPainelSindico()">
+      Voltar ao painel do síndico
+    </button>
+  }
+  <app-chamados
+    perfil="sindico"
+    [usuarioLogado]="usuarioLogado"
+    (telaMudou)="atualizarTelaChamados($event)">
+  </app-chamados>
+}
+@if (telaAtual === 'inicio') {
+  <section class="inicio-landing">
+    <p class="inicio-etiqueta">{{ perfil_selecionado === 'sindico' ? 'PAINEL DO SÍNDICO' : 'ÁREA DO MORADOR' }}</p>
+    <h2>Bem-vindo ao sistema Veritas</h2>
+    <p>Olá, {{ usuarioLogado }}. Acompanhe as informações do seu condomínio em um só lugar.</p>
+
+    <div class="inicio-destaque">
+      <mat-icon>home_work</mat-icon>
+      <div>
+        <strong>Residencial Jardim das Acácias</strong>
+        <span>Use o menu abaixo para acessar suas funções.</span>
+      </div>
+    </div>
+  </section>
+}
+@if (telaAtual === 'painelSindico') {
+  <section class="painel-sindico">
+    <header class="cabecalho-painel-sindico">
+      <h2>Painel do síndico</h2>
+      <p>Residencial Jardim das Acácias</p>
+    </header>
+
+    <div class="indicadores-sindico">
+      <article><strong>0</strong><span>Moradores cadastrados</span></article>
+      <article><strong class="indicador-dourado">{{  quantidadeAbertos() }}</strong><span>Chamados abertos</span></article>
+      <article><strong class="indicador-dourado">{{ quantidadeEmAndamento() }}</strong><span>Em andamento</span></article>
+      <article><strong class="indicador-verde">{{ quantidadeConcluidos() }}</strong><span>Concluídos</span></article>
+    </div>
+
+    <h3 class="titulo-acesso-rapido">Acesso rápido</h3>
+    <div class="acessos-rapidos">
+      <button type="button" (click)="abrirTodosChamadosSindico()">
+        <span><strong>Gerenciar chamados</strong><small>Ver e atualizar os chamados</small></span>
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+
+      <button type="button" (click)="abrirMoradores()">
+        <span><strong>Gerar código de convite</strong><small>Liberar cadastro de uma unidade</small></span>
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+      <button type="button" (click)="abrirAssembleia()">
+        <span><strong>Organizar assembleia</strong><small>Agendar reunião e publicar a pauta</small></span>
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+      <button type="button" (click)="abrirAnaliseProjetos()">
+        <span><strong>Análise de projetos</strong><small>Revisar propostas e acompanhar a execução</small></span>
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+  </section>
+}
+@if (telaAtual === 'perfilUsuario') {
+  <section class="pagina-perfil-vazia">
+    <div class="avatar-perfil" aria-hidden="true">
+      <mat-icon>person</mat-icon>
+    </div>
+    <h2>Perfil do {{ perfil_selecionado === 'sindico' ? 'síndico' : 'morador' }}</h2>
+    <p>{{ usuarioLogado }}</p>
+    <button class="botao-escolher-perfil" type="button" (click)="sair()">
+      Voltar para escolha de perfil
+    </button>
+  </section>
+}
+@if (telaAtual === 'moradores') {
+  <app-moradores (voltarPainel)="voltarParaPainelSindico()"></app-moradores>
+} 
+@if (telaAtual === 'assembleia') {
+  <app-assembleia [perfil]="perfil_selecionado" [usuarioLogado]="usuarioLogado"></app-assembleia>
+}
+@if (telaAtual === 'analiseProjetos') {
+  <app-assembleia [perfil]="perfil_selecionado" [usuarioLogado]="usuarioLogado" secao="analise"></app-assembleia>
+}
+@if (telaAtual === 'cadastroMorador') {
+  
+
+  <app-cadastro-morador
+  (voltarLogin)="voltarParaLogin()">
+</app-cadastro-morador>
+}
+
+@if (
+  usuarioLogado !== '' &&
+  telaAtual !== 'perfil' &&
+  telaAtual !== 'login' &&
+  telaAtual !== 'cadastroMorador'
+) {
+  <nav class="barra-navegacao" aria-label="Navegação principal">
+    <button type="button" [class.ativo]="telaAtual === 'inicio'" (click)="abrirInicio()">
+      <mat-icon>home</mat-icon>
+      <span>Início</span>
+    </button>
+
+    <button type="button" [class.ativo]="telaAtual === 'sistema' || telaAtual === 'painelSindico' || telaAtual === 'chamadosSindico'" (click)="abrirChamados()">
+      <mat-icon>assignment</mat-icon>
+      <span>Chamados</span>
+    </button>
+
+    <button type="button" [class.ativo]="telaAtual === 'perfilUsuario'" (click)="abrirPerfilUsuario()">
+      <mat-icon>person</mat-icon>
+      <span>Perfil</span>
+    </button>
+    <button type="button" [class.ativo]="telaAtual === 'assembleia'" (click)="abrirAssembleia()">
+      <mat-icon>groups</mat-icon>
+      <span>Assembleia</span>
+    </button>
+    <button type="button" [class.ativo]="telaAtual === 'analiseProjetos'" (click)="abrirAnaliseProjetos()">
+      <mat-icon>analytics</mat-icon>
+      <span>Análises</span>
+    </button>
+  </nav>
+}

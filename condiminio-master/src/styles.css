@@ -1,0 +1,35 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@300;400;600;700&display=swap');
+
+:root {
+  --cor-fundo: #262A2E;
+  --cor-primaria: #c8956c;
+  --cor-texto: #f8fafc;
+  --cor-card: #ffffff;
+  --cor-card-escuro: #1e293b;
+  --cor-input: #f5f0eb;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+body {
+  font-family: 'Zilla Slab', sans-serif;
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  min-height: 100vh;
+}
+
+.page-header {
+  padding: 1.5rem;
+}
+
+.page-content {
+  background-color: var(--cor-input);
+  padding: 1.5rem;
+  min-height: 100vh;
+}
