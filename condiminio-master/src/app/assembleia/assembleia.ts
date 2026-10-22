@@ -33,7 +33,7 @@ export class Assembleia {
   }
 
   enviarProjeto(tituloInput: HTMLInputElement, descricaoInput: HTMLTextAreaElement, precoInput: HTMLInputElement): void {
-    if (this.perfil !== 'morador') return;
+    if (this.perfil !== 'morador' && this.perfil !== 'sindico') return;
     const titulo = tituloInput.value;
     const descricao = descricaoInput.value;
     const mediaPreco = Number(precoInput.value);
@@ -47,7 +47,9 @@ export class Assembleia {
     descricaoInput.value = '';
     precoInput.value = '';
     this.mensagemErro = '';
-    this.mensagemSucesso = 'Projeto enviado para análise do síndico.';
+    this.mensagemSucesso = this.perfil === 'sindico'
+      ? 'Projeto adicionado à votação.'
+      : 'Projeto enviado para análise do síndico.';
   }
 
   votar(projeto: ProjetoCondominio, voto: 'favor' | 'contra'): void {
