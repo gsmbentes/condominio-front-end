@@ -38,9 +38,9 @@
       }
     </section>
 
-    @if (perfil === 'morador') {
+    @if (perfil === 'morador' || perfil === 'sindico') {
       <section class="formulario-assembleia">
-        <div class="titulo-secao"><p class="etiqueta-assembleia">NOVA VOTAÇÃO</p><h2>Adicionar projeto</h2><p>Apresente sua proposta para os moradores avaliarem.</p></div>
+        <div class="titulo-secao"><p class="etiqueta-assembleia">NOVA VOTAÇÃO</p><h2>Adicionar projeto</h2><p>{{ perfil === 'sindico' ? 'Cadastre uma proposta para os moradores avaliarem.' : 'Apresente sua proposta para os moradores avaliarem.' }}</p></div>
         <div class="grade-campos">
           <label class="campo campo-largo" for="titulo-projeto">Título do projeto<input id="titulo-projeto" #tituloProjeto maxlength="80" placeholder="Ex.: Revitalização do jardim" /></label>
           <label class="campo campo-largo" for="descricao-projeto">Descrição<textarea id="descricao-projeto" #descricaoProjeto rows="4" placeholder="Explique os detalhes da proposta"></textarea></label>
@@ -53,7 +53,7 @@
     }
 
     <section class="lista-assembleias">
-      <header class="cabecalho-lista"><div><h2>Votações em aberto</h2><p>Vote a favor ou contra as propostas dos moradores.</p></div><span class="contador">{{ projetosEmAnalise().length }}</span></header>
+      <header class="cabecalho-lista"><div><h2>Votações em aberto</h2><p>Vote a favor ou contra as propostas do condomínio.</p></div><span class="contador">{{ projetosEmAnalise().length }}</span></header>
       @if (projetosEmAnalise().length === 0) {
         <div class="estado-vazio"><strong>Nenhuma votação adicionada</strong><p>As novas propostas aparecerão aqui.</p></div>
       } @else {
