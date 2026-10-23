@@ -273,10 +273,6 @@ Entrar
       <span>Chamados</span>
     </button>
 
-    <button type="button" [class.ativo]="telaAtual === 'perfilUsuario'" (click)="abrirPerfilUsuario()">
-      <mat-icon>person</mat-icon>
-      <span>Perfil</span>
-    </button>
     <button type="button" [class.ativo]="telaAtual === 'assembleia'" (click)="abrirAssembleia()">
       <mat-icon>groups</mat-icon>
       <span>Assembleia</span>
@@ -284,6 +280,10 @@ Entrar
     <button type="button" [class.ativo]="telaAtual === 'analiseProjetos'" (click)="abrirAnaliseProjetos()">
       <mat-icon>analytics</mat-icon>
       <span>Análises</span>
+    </button>
+    <button type="button" [class.ativo]="telaAtual === 'perfilUsuario'" (click)="abrirPerfilUsuario()">
+      <mat-icon>person</mat-icon>
+      <span>Perfil</span>
     </button>
   </nav>
 }
